@@ -1,0 +1,25 @@
+services:
+  web:
+    build: ./docker/liferay
+    ports:
+      - "8080:8080" # default liferay port
+    volumes:
+      - ./docker/liferay/mnt/liferay:/mnt/liferay
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+  db:
+    build: ./docker/pg
+    ports:
+      - "5432:5432" # default postgres port
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    environment:
+      POSTGRES_USER: liferay
+      POSTGRES_PASSWORD: liferay
+      POSTGRES_DB: liferay

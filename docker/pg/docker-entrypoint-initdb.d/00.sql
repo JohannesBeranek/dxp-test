@@ -1,0 +1,1 @@
+-- use for sql scripts that should run at the start of the container, before liferay has started
